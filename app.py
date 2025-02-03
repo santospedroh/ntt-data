@@ -46,5 +46,13 @@ def salvar():
         except Exception as e: 
             print(e)
 
+@app.route("/hello")
+def hello():
+    try:       
+        print("Hello World") 
+        return print("Hello World") 
+    except Exception as e:
+        print(e)
+
 if __name__ == '__main__':
     app.run(debug = True)

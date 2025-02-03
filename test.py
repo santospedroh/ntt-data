@@ -9,7 +9,7 @@ class Test(unittest.TestCase):
         self.app = app.test_client()
         
         # envia uma requisicao GET para a URL                                                                                                                                                            
-        self.result = self.app.get('/')   
+        self.result = self.app.get('/hello')   
 
     # Testamos se a resposta e 200 ("ok")
     def test_get(self):
