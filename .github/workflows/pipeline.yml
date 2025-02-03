@@ -85,12 +85,39 @@ jobs:
 
 #-------------------------------------------------------------------------------#
 #-------------------------------------------------------------------------------#
+# Build e Release                                                               #
+#-------------------------------------------------------------------------------#
+#-------------------------------------------------------------------------------#
+  job3:
+  needs: job2
+  runs-on: ubuntu-latest
+  name: Create Release Archive
+  
+  steps:
+    - name: Create Release Archive
+      run: |
+        mkdir -p release
+        cp -r * release/
+        tar -czf release/my-flask-app.tar.gz -C release .
+        
+    - name: Create GitHub release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: release/my-flask-app.tar.gz
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+#-------------------------------------------------------------------------------#
+#-------------------------------------------------------------------------------#
 # Deploy Railway                                                                #
 #-------------------------------------------------------------------------------#
 #-------------------------------------------------------------------------------#
 
-  job3:
-    needs: job2  
+
+###-- END Job2 ---###
+
+  job4:
+    needs: job3  
     name: Deploy Railway
     runs-on: ubuntu-latest
     container: ghcr.io/railwayapp/cli:latest
