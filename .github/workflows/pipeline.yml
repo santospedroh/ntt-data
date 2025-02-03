@@ -41,13 +41,6 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-
-    # Instalação SQLite local. 
-    - name: Install SQLite
-      run: |
-        python schema/create_db.py
-        python schema/create_table.py
-        python schema/insert_data.py
         
     # Executa scripts de teste.
     - name: Execute tests

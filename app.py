@@ -1,50 +1,52 @@
-
-from flask import Flask, render_template, request
-#from flask_wtf.csrf import CSRFProtect
-import sqlite3
+from flask import Flask, render_template, request, jsonify
 
 app = Flask(__name__)
-#csrf = CSRFProtect(app)
 
-def consult():
-    # conexao
-    conn = sqlite3.connect('schema/post-it-database.db')
-    conn.row_factory = sqlite3.Row
-    curr = conn.cursor()
-    # consulta
-    curr.execute("SELECT nome, mensagem, datetime(criado_em,'localtime') as criado_em FROM post ORDER BY criado_em DESC")
-    rows = curr.fetchall()
-    return rows
+# Inicializando o tabuleiro
+tabuleiro = [" " for _ in range(9)]
+jogador_atual = "X"
 
-def save(nome, mensagem):
-    # conexao
-    conn = sqlite3.connect('schema/post-it-database.db')
-    curr = conn.cursor()  
-    #salva
-    curr.execute("INSERT into post (nome, mensagem) values (?,?)",(nome,mensagem))  
-    conn.commit()  
+# Função para verificar o vencedor
+def verificar_vencedor():
+    combinacoes = [
+        (0, 1, 2), (3, 4, 5), (6, 7, 8),  # Horizontais
+        (0, 3, 6), (1, 4, 7), (2, 5, 8),  # Verticais
+        (0, 4, 8), (2, 4, 6)              # Diagonais
+    ]
+    
+    for a, b, c in combinacoes:
+        if tabuleiro[a] == tabuleiro[b] == tabuleiro[c] and tabuleiro[a] != " ":
+            return tabuleiro[a]
+    
+    if " " not in tabuleiro:
+        return "Empate"
+    
+    return None
 
-@app.route("/")
-def home():
-    try:
-        rows = consult()
-        print("Efetuando consulta no SQLite.") 
-        return render_template('index.html', posts = rows, show_modal=False )
-    except Exception as e:
-        print(e)
+@app.route('/')
+def index():
+    return render_template('index.html', tabuleiro=tabuleiro, jogador_atual=jogador_atual)
 
-@app.route("/salvar", methods = ["POST","GET"])
-def salvar():
-     if request.method == "POST":
-        try:
-            name = request.form["nome"]  
-            message = request.form["mensagem"]  
-            save(name, message)                     
-            rows = consult()
-            print("Salvando dados no SQLite.")   
-            return render_template('index.html', posts = rows, show_modal=True)         
-        except Exception as e: 
-            print(e)
+@app.route('/jogada/<int:posicao>')
+def jogada(posicao):
+    global jogador_atual
+    if tabuleiro[posicao] == " ":
+        tabuleiro[posicao] = jogador_atual
+        vencedor = verificar_vencedor()
+        if vencedor:
+            return jsonify({"vencedor": vencedor})
+        
+        # Troca de jogador
+        jogador_atual = "O" if jogador_atual == "X" else "X"
+    
+    return jsonify({"tabuleiro": tabuleiro, "jogador_atual": jogador_atual})
+
+@app.route('/reiniciar')
+def reiniciar():
+    global tabuleiro, jogador_atual
+    tabuleiro = [" " for _ in range(9)]
+    jogador_atual = "X"
+    return jsonify({"tabuleiro": tabuleiro, "jogador_atual": jogador_atual})
 
 @app.route("/hello")
 def hello():
@@ -54,5 +56,5 @@ def hello():
     except Exception as e:
         print(e)
 
-if __name__ == '__main__':
-    app.run(debug = True)
+if __name__ == "__main__":
+    app.run(debug=True)
