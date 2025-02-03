@@ -1,0 +1,90 @@
+
+# Definie o nome da pipeline
+name: Post-it App
+
+# Evento que vai disparar o Job
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+
+#-------------------------------------------------------------------------------#
+#-------------------------------------------------------------------------------#
+# Testes Unitarios                                                              #
+#-------------------------------------------------------------------------------#
+#-------------------------------------------------------------------------------#
+  job1:
+    name: Install dependencies and Unit Tests
+    runs-on: ubuntu-latest
+
+    # Checkout código fonte
+    steps:
+    - uses: actions/checkout@v2
+
+    # Instalação Python3
+    - name: Set up Python version
+      uses: actions/setup-python@v1
+      with:
+        python-version: '3.8'
+
+    # Cria virtual env Python
+    - name: Create and start virtual environment
+      run: |
+        python -m venv venv
+        source venv/bin/activate
+
+    # Instalação de Módulos que são necessários para a Aplicação. 
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    # Instalação SQLite local. 
+    - name: Install SQLite
+      run: |
+        python create_db.py
+        python create_table.py
+        python_data.py
+        
+    # Executa scripts de teste (PyTest, Django test suites, etc.)
+    - name: Execute tests
+      run: |
+        pip install pytest
+        pip install pytest-cov
+        pip install coverage
+        coverage run test.py 
+        coverage report app.py
+        coverage xml app.py
+      
+    # Checkin código fonte
+    - name: Upload artifact for deployment jobs
+      uses: actions/upload-artifact@v2
+      with:
+        name: python-app
+        path: |
+          . 
+          !venv/
+
+###-- END Job1 ---###
+
+#-------------------------------------------------------------------------------#
+#-------------------------------------------------------------------------------#
+# Teste de Qualidade SonarCloud                                                 #
+#-------------------------------------------------------------------------------#
+#-------------------------------------------------------------------------------#
+  job2:    
+    name: Quality Test SonarQube
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v4
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+###-- END Job2 ---###

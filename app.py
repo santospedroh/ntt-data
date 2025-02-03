@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 def consult():
     # conexao
-    conn = sqlite3.connect('post-it-database.db')
+    conn = sqlite3.connect('schema/post-it-database.db')
     conn.row_factory = sqlite3.Row
     curr = conn.cursor()
     # consulta
@@ -18,7 +18,7 @@ def consult():
 
 def save(nome, mensagem):
     # conexao
-    conn = sqlite3.connect('post-it-database.db')
+    conn = sqlite3.connect('schema/post-it-database.db')
     curr = conn.cursor()  
     #salva
     curr.execute("INSERT into post (nome, mensagem) values (?,?)",(nome,mensagem))  
