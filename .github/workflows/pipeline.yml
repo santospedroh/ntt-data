@@ -98,7 +98,7 @@ jobs:
 
   job3:
     needs: job2  
-    name: Deploy
+    name: Deploy Railway
     runs-on: ubuntu-latest
     container: ghcr.io/railwayapp/cli:latest
     env:
