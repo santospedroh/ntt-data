@@ -86,6 +86,24 @@ jobs:
 
 #-------------------------------------------------------------------------------#
 #-------------------------------------------------------------------------------#
+# Aprovação antes do Deploy                                                     #
+#-------------------------------------------------------------------------------#
+#-------------------------------------------------------------------------------#
+  job3:
+    needs: job2
+    name: Manual Approval Before Deploy
+    runs-on: ubuntu-latest
+    environment:
+      name: production  # Defina o ambiente que precisa de aprovação
+    steps:
+    - name: Wait for manual approval
+      run: |
+        echo "Aguardando aprovação manual para o deploy."
+
+###-- END Approval ---###
+
+#-------------------------------------------------------------------------------#
+#-------------------------------------------------------------------------------#
 # Deploy Railway                                                                #
 #-------------------------------------------------------------------------------#
 #-------------------------------------------------------------------------------#
@@ -93,8 +111,8 @@ jobs:
 
 ###-- END Job2 ---###
 
-  job3:
-    needs: job2 
+  job4:
+    needs: job3
     name: Deploy Railway
     runs-on: ubuntu-latest
     container: ghcr.io/railwayapp/cli:latest
