@@ -89,11 +89,11 @@ jobs:
 #-------------------------------------------------------------------------------#
 #-------------------------------------------------------------------------------#
   job3:
-  needs: job2
-  runs-on: ubuntu-latest
-  name: Create Release Archive
+    needs: job2
+    runs-on: ubuntu-latest
+    name: Create Release Archive
   
-  steps:
+    steps:
     - name: Create Release Archive
       run: |
         mkdir -p release
