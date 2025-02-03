@@ -45,9 +45,9 @@ jobs:
     # Instalação SQLite local. 
     - name: Install SQLite
       run: |
-        schema/python create_db.py
-        schema/python create_table.py
-        schema/python_data.py
+        python schema/create_db.py
+        python schema/create_table.py
+        python schema/insert_data.py
         
     # Executa scripts de teste.
     - name: Execute tests
