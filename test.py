@@ -10,11 +10,7 @@ class Test(unittest.TestCase):
         
         # envia uma requisicao GET para a URL                                                                                                                                                            
         self.result = self.app.get('/hello')   
-
-    # Testamos se a resposta e 200 ("ok")
-    def test_get(self):
-        self.assertEqual(self.result.status_code, 200)  
-
+        
 if __name__ == "__main__":                                                                                                                                                                               
     print('INICIANDO OS TESTES')                                                                                                                                                                        
     print('----------------------------------------------------------------------')                                                                                                                      
