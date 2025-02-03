@@ -55,7 +55,7 @@ jobs:
         pip install pytest
         pip install pytest-cov
         pip install coverage
-        python -m pytest --import-mode=append tests
+        python -m pytest --import-mode=append tests/
         # coverage run test.py 
         # coverage report app.py
         # coverage xml app.py
