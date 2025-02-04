@@ -13,3 +13,5 @@
     - Usar funcionalidade environment do github para restringir a aprovação do deploy para um usuário ou grupo do github.
 3. Se todos os passos acima forem bem-sucedidos, o pipeline deve fazer o deploy da aplicação em um ambiente de teste.
 4. O pipeline deve notificar o desenvolvedor via e-mail se o processo de CI/CD falhar em qualquer etapa.
+
+### Link App: https://ntt-data-production.up.railway.app/
